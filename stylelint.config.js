@@ -15,6 +15,8 @@ export default {
     },
   ],
   rules: {
+    /* CSS Modules: классы обращаются из TSX как s.camelCase. */
+    "selector-class-pattern": "^[a-z][a-zA-Z0-9]*$",
     "declaration-property-value-keyword-no-deprecated": null,
   },
   ignoreFiles: ["dist/**", "coverage/**"],

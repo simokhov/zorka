@@ -1,0 +1,90 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-alt);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.button:disabled {
+  color: var(--color-ink-muted);
+  cursor: default;
+}
+
+.button:active:not(:disabled) {
+  background-color: var(--color-border);
+}
+
+.value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 96px;
+}
+
+.input {
+  width: 96px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: var(--font-h3);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  appearance: textfield;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.input:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+.unit {
+  font: var(--font-meta);
+  color: var(--color-ink-muted);
+}
+
+.empty {
+  min-width: 96px;
+  text-align: center;
+  font: var(--font-h3);
+  color: var(--color-ink-muted);
+}
+
+.error {
+  margin: 0;
+  font: var(--font-secondary);
+  color: var(--color-amber-text);
+}

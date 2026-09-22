@@ -1,0 +1,53 @@
+.line {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-chip);
+  background-color: var(--color-surface-alt);
+}
+
+.icon {
+  color: var(--color-ink-secondary);
+}
+
+.temperature {
+  font: var(--font-body-strong);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dot {
+  color: var(--color-ink-muted);
+}
+
+.detail {
+  font: var(--font-meta);
+  color: var(--color-ink-muted);
+}
+
+.missing {
+  font: var(--font-meta);
+  color: var(--color-ink-muted);
+}
+
+.skeleton {
+  width: 180px;
+  height: 24px;
+  border-radius: var(--radius-chip);
+  background-color: var(--color-surface-alt);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
