@@ -1,0 +1,8 @@
+/* Дизайн-токены — единственное место с литеральными HEX-значениями (см. stylelint). */
+:root {
+  --color-primary: #2e5339;
+  --color-surface: #f6f4ef;
+  --color-ink: #1f2a24;
+  --color-danger: #b4543c;
+  --color-danger-bg: #f8e9e4;
+}
