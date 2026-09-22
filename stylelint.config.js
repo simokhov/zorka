@@ -6,6 +6,11 @@ export default {
       files: ["src/styles/tokens.css"],
       rules: {
         "color-no-hex": null,
+        /* HEX из §2.1 и rgba-производные §2.3 переносятся из дизайн-системы один в один. */
+        "color-hex-length": null,
+        "color-function-notation": null,
+        "color-function-alias-notation": null,
+        "alpha-value-notation": null,
       },
     },
   ],
