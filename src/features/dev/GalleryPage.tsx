@@ -14,6 +14,7 @@ import {
 } from "../../ui";
 import s from "./GalleryPage.module.css";
 
+// Цвет заливки совпадает с --color-tint-blue (var() внутри data-URI недоступен).
 const photoPlaceholder =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='480'%3E%3Crect width='640' height='480' fill='%23c0d8e4'/%3E%3C/svg%3E";
 
@@ -35,7 +36,7 @@ function InteractiveStepper({
   error,
 }: {
   initial?: number | null;
-  error?: string | undefined;
+  error?: string;
 }) {
   const [value, setValue] = useState<number | null>(initial ?? null);
   return (

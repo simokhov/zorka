@@ -45,4 +45,16 @@ describe("TabBar", () => {
     renderTabBar(<TabBar items={[{ ...feed, badge: 1 }, map, stats]} />);
     expect(screen.queryByText("1")).not.toBeInTheDocument();
   });
+
+  it("labels badges for screen readers", () => {
+    renderTabBar(
+      <TabBar items={[{ ...feed, badge: 3 }, map, { ...stats, badge: 1 }]} />,
+    );
+    expect(
+      screen.getByRole("img", { name: "Записей в очереди: 3" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Записей в очереди: 1" }),
+    ).toBeInTheDocument();
+  });
 });

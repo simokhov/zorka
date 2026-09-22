@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -28,6 +29,24 @@ describe("FloatInput", () => {
   it("renders disabled fields as inert", () => {
     render(<FloatInput label="Заметка" defaultValue="..." disabled />);
     expect(screen.getByLabelText("Заметка")).toBeDisabled();
+  });
+
+  it("supports native input types and ref forwarding", () => {
+    const ref = createRef<HTMLInputElement>();
+    render(
+      <FloatInput
+        label="Пароль"
+        type="password"
+        name="password"
+        autoComplete="new-password"
+        ref={ref}
+      />,
+    );
+    const input = screen.getByLabelText("Пароль");
+    expect(input).toHaveAttribute("type", "password");
+    expect(input).toHaveAttribute("name", "password");
+    expect(input).toHaveAttribute("autoComplete", "new-password");
+    expect(ref.current).toBe(input);
   });
 
   it("supports the multiline note variant", () => {

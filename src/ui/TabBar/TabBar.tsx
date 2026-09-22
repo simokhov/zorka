@@ -30,9 +30,19 @@ function TabLink({ item }: { item: TabBarItem }) {
       <span className={s.iconWrap}>
         <Icon name={item.icon} size={24} />
         {badge > 1 ? (
-          <span className={s.badgeCount}>{badge}</span>
+          <span
+            className={s.badgeCount}
+            role="img"
+            aria-label={`Записей в очереди: ${badge}`}
+          >
+            {badge}
+          </span>
         ) : badge === 1 ? (
-          <span className={s.badgeDot} />
+          <span
+            className={s.badgeDot}
+            role="img"
+            aria-label="Записей в очереди: 1"
+          />
         ) : null}
       </span>
       <span className={s.label}>{item.label}</span>

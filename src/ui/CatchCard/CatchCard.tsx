@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useCallback } from "react";
+import type { KeyboardEvent, MouseEventHandler, ReactNode } from "react";
 import { Icon } from "../icons/Icon";
 import type { IconName } from "../icons/Icon";
 import s from "./CatchCard.module.css";
@@ -11,6 +12,12 @@ export interface CatchCardProps {
   badge?: ReactNode;
   trophy?: boolean;
   icon?: IconName;
+  /**
+   * Вызывается при клике/тапе по карточке и по нажатию Enter/Space.
+   * Корень карточки — div с role="button" (не <button>), чтобы вложенные
+   * интерактивные элементы (например, кнопка «Повторить» в SyncBadge)
+   * оставались валидной разметкой без вложения интерактивных контролов.
+   */
   onClick?: () => void;
 }
 
@@ -24,12 +31,36 @@ export function CatchCard({
   icon = "fish",
   onClick,
 }: CatchCardProps) {
+  const handleClick: MouseEventHandler<HTMLDivElement> = useCallback(
+    (event) => {
+      if (onClick === undefined) return;
+      const target = event.target as HTMLElement;
+      if (target.closest("button") !== null) return;
+      onClick();
+    },
+    [onClick],
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (onClick === undefined) return;
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        const target = event.target as HTMLElement;
+        if (target.closest("button") !== null) return;
+        onClick();
+      }
+    },
+    [onClick],
+  );
+
   return (
-    <button
-      type="button"
+    <div
       className={s.card}
-      onClick={onClick}
-      aria-label={photo ? photo.alt : species}
+      role={onClick === undefined ? undefined : "button"}
+      tabIndex={onClick === undefined ? undefined : 0}
+      onClick={onClick === undefined ? undefined : handleClick}
+      onKeyDown={onClick === undefined ? undefined : handleKeyDown}
     >
       {photo ? (
         <img src={photo.src} alt={photo.alt} className={s.photo} />
@@ -57,6 +88,6 @@ export function CatchCard({
           </span>
         )}
       </span>
-    </button>
+    </div>
   );
 }

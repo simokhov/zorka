@@ -8,7 +8,6 @@
   border-radius: var(--radius-card);
   background-color: var(--color-surface);
   box-shadow: var(--shadow-soft);
-  cursor: pointer;
   text-align: inherit;
   font: inherit;
 }
@@ -16,6 +15,10 @@
 .card:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+.card[role="button"] {
+  cursor: pointer;
 }
 
 .media {

@@ -56,7 +56,7 @@
 }
 
 .secondary:active:not(:disabled) {
-  background-color: var(--color-tint-blue);
+  background-color: var(--color-surface-alt);
   border-color: var(--color-primary-deep-text);
 }
 

@@ -15,6 +15,7 @@ export function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/dev/gallery" element={<GalleryPage />} />
+      <Route path="*" element={<HomePage />} />
     </Routes>
   );
 }

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Stepper } from "./Stepper";
 
 describe("Stepper", () => {
@@ -60,5 +60,87 @@ describe("Stepper", () => {
     );
     expect(screen.getByRole("alert")).toHaveTextContent("Слишком много");
     expect(screen.getByRole("spinbutton", { name: "Вес" })).toHaveValue(20000);
+  });
+
+  describe("long-press acceleration", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("steps on hold, accelerates, and stops on pointerup", () => {
+      const onChange = vi.fn();
+      render(
+        <Stepper
+          label="Вес"
+          value={500}
+          unit="г"
+          step={50}
+          onChange={onChange}
+        />,
+      );
+      const plus = screen.getByRole("button", { name: "Увеличить: Вес" });
+
+      fireEvent.pointerDown(plus, { button: 0 });
+      vi.advanceTimersByTime(250);
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenLastCalledWith(550);
+
+      vi.advanceTimersByTime(750);
+      const callsAfterHold = onChange.mock.calls.length;
+      expect(callsAfterHold).toBeGreaterThan(2);
+
+      fireEvent.pointerUp(plus);
+      vi.advanceTimersByTime(2000);
+      expect(onChange.mock.calls.length).toBe(callsAfterHold);
+    });
+
+    it("a simple click changes the value exactly once", () => {
+      const onChange = vi.fn();
+      render(
+        <Stepper
+          label="Вес"
+          value={500}
+          unit="г"
+          step={50}
+          onChange={onChange}
+        />,
+      );
+      const plus = screen.getByRole("button", { name: "Увеличить: Вес" });
+
+      fireEvent.pointerDown(plus, { button: 0 });
+      fireEvent.pointerUp(plus);
+      fireEvent.click(plus);
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenLastCalledWith(550);
+
+      vi.advanceTimersByTime(2000);
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
+    it("stops acceleration when the pointer leaves the button", () => {
+      const onChange = vi.fn();
+      render(
+        <Stepper
+          label="Вес"
+          value={500}
+          unit="г"
+          step={50}
+          onChange={onChange}
+        />,
+      );
+      const plus = screen.getByRole("button", { name: "Увеличить: Вес" });
+
+      fireEvent.pointerDown(plus, { button: 0 });
+      vi.advanceTimersByTime(500);
+      const callsAtHold = onChange.mock.calls.length;
+
+      fireEvent.pointerLeave(plus);
+      vi.advanceTimersByTime(2000);
+      expect(onChange.mock.calls.length).toBe(callsAtHold);
+    });
   });
 });

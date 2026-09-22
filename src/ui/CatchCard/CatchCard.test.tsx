@@ -10,6 +10,7 @@ describe("CatchCard", () => {
         species="Щука"
         weight="1 240 г"
         metadata={["08:40", "Старица", "Спиннинг"]}
+        onClick={() => undefined}
       />,
     );
     expect(screen.getByRole("button", { name: /Щука/ })).toBeInTheDocument();
@@ -19,8 +20,7 @@ describe("CatchCard", () => {
 
   it("shows a species-icon placeholder when there is no photo", () => {
     render(<CatchCard species="Окунь" />);
-    const media = screen.getByRole("button", { name: /Окунь/ });
-    expect(media).toBeInTheDocument();
+    expect(screen.getByText("Окунь")).toBeInTheDocument();
   });
 
   it("renders a photo with alt text when provided", () => {
@@ -47,6 +47,18 @@ describe("CatchCard", () => {
     await user.click(screen.getByRole("button", { name: /Лещ/ }));
     expect(onClick).toHaveBeenCalledTimes(1);
     await user.click(screen.getByText("900 г"));
+    expect(onClick).toHaveBeenCalledTimes(2);
+  });
+
+  it("activates via Enter and Space keys", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(<CatchCard species="Судак" onClick={onClick} />);
+    const card = screen.getByRole("button", { name: /Судак/ });
+    await user.tab();
+    expect(card).toHaveFocus();
+    await user.keyboard("{Enter}");
+    await user.keyboard(" ");
     expect(onClick).toHaveBeenCalledTimes(2);
   });
 });

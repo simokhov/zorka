@@ -1,8 +1,25 @@
 import { useId } from "react";
-import type { ChangeEventHandler, InputHTMLAttributes } from "react";
+import type {
+  ChangeEventHandler,
+  InputHTMLAttributes,
+  Ref,
+  TextareaHTMLAttributes,
+} from "react";
 import s from "./FloatInput.module.css";
 
-export interface FloatInputProps {
+type NativeInputRest = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  | "value"
+  | "defaultValue"
+  | "onChange"
+  | "onBlur"
+  | "placeholder"
+  | "className"
+  | "style"
+  | "ref"
+>;
+
+export interface FloatInputProps extends NativeInputRest {
   label: string;
   value?: string;
   defaultValue?: string;
@@ -16,13 +33,16 @@ export interface FloatInputProps {
   autoComplete?: string;
   inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
   maxLength?: number;
+  id?: string;
+  type?: "text" | "email" | "password" | "tel" | "url" | "search";
+  ref?: Ref<HTMLInputElement>;
 }
 
-type ValueProps = {
+interface ValueProps {
   value?: string;
   defaultValue?: string;
   onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-};
+}
 
 interface ControlProps {
   id: string;
@@ -53,9 +73,13 @@ export function FloatInput({
   autoComplete,
   inputMode,
   maxLength,
+  id,
+  type = "text",
+  ref,
+  ...rest
 }: FloatInputProps) {
   const autoId = useId();
-  const inputId = `${autoId}-input`;
+  const inputId = id ?? `${autoId}-input`;
   const errorId = `${autoId}-error`;
   const hasError = error !== undefined;
 
@@ -98,9 +122,19 @@ export function FloatInput({
           .join(" ")}
       >
         {multiline ? (
-          <textarea {...controlProps} {...valueProps} />
+          <textarea
+            {...(rest as TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            {...controlProps}
+            {...valueProps}
+          />
         ) : (
-          <input type="text" {...controlProps} {...valueProps} />
+          <input
+            ref={ref}
+            type={type}
+            {...controlProps}
+            {...valueProps}
+            {...rest}
+          />
         )}
         <label htmlFor={inputId} className={s.label}>
           {label}

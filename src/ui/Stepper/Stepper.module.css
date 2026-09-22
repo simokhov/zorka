@@ -34,7 +34,8 @@
   cursor: default;
 }
 
-.button:active:not(:disabled) {
+.button:active:not(:disabled),
+.button[data-pressed]:not(:disabled) {
   background-color: var(--color-border);
 }
 
