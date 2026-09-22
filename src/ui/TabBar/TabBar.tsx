@@ -10,9 +10,11 @@ export interface TabBarItem {
   badge?: number;
 }
 
+export type TabBarCenterItem = Omit<TabBarItem, "badge">;
+
 export interface TabBarProps {
   items?: TabBarItem[];
-  centerItem?: TabBarItem;
+  centerItem?: TabBarCenterItem;
 }
 
 function TabLink({ item }: { item: TabBarItem }) {
@@ -39,7 +41,7 @@ function TabLink({ item }: { item: TabBarItem }) {
 }
 
 export function TabBar({ items = [], centerItem }: TabBarProps) {
-  const center: TabBarItem = centerItem ?? {
+  const center: TabBarCenterItem = centerItem ?? {
     to: "/record",
     label: "Запись",
     icon: "plus",
@@ -55,11 +57,7 @@ export function TabBar({ items = [], centerItem }: TabBarProps) {
         <NavLink
           to={center.to}
           aria-label={center.label}
-          className={({ isActive }) =>
-            [s.centerLink, isActive ? s.centerActive : ""]
-              .filter(Boolean)
-              .join(" ")
-          }
+          className={[s.centerLink].filter(Boolean).join(" ")}
         >
           <Icon name={center.icon} size={24} />
         </NavLink>

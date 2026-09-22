@@ -15,7 +15,7 @@ export function Chip({ active = false, count, children, ...rest }: ChipProps) {
       aria-pressed={active}
       {...rest}
     >
-      <span className={s.label}>{children}</span>
+      {children}
       {count !== undefined && (
         <span className={s.count}>
           {"· "}

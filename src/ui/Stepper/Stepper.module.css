@@ -71,15 +71,13 @@
   border-radius: var(--radius-sm);
 }
 
-.unit {
-  font: var(--font-meta);
+.input::placeholder {
   color: var(--color-ink-muted);
+  opacity: 1;
 }
 
-.empty {
-  min-width: 96px;
-  text-align: center;
-  font: var(--font-h3);
+.unit {
+  font: var(--font-meta);
   color: var(--color-ink-muted);
 }
 

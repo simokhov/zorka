@@ -25,40 +25,38 @@ export function CatchCard({
   onClick,
 }: CatchCardProps) {
   return (
-    <article className={s.card}>
-      <button
-        type="button"
-        className={s.mediaButton}
-        onClick={onClick}
-        aria-label={photo ? photo.alt : species}
-      >
-        {photo ? (
-          <img src={photo.src} alt={photo.alt} className={s.photo} />
-        ) : (
-          <span className={`${s.media} ${s.placeholder}`}>
-            <Icon name={icon} size={24} className={s.placeholderIcon} />
-          </span>
-        )}
-      </button>
-      <div className={s.body}>
-        <div className={s.speciesRow}>
-          <h3 className={s.species}>{species}</h3>
+    <button
+      type="button"
+      className={s.card}
+      onClick={onClick}
+      aria-label={photo ? photo.alt : species}
+    >
+      {photo ? (
+        <img src={photo.src} alt={photo.alt} className={s.photo} />
+      ) : (
+        <span className={`${s.media} ${s.placeholder}`}>
+          <Icon name={icon} size={24} className={s.placeholderIcon} />
+        </span>
+      )}
+      <span className={s.body}>
+        <span className={s.speciesRow}>
+          <span className={s.species}>{species}</span>
           {weight !== undefined && <span className={s.weight}>{weight}</span>}
-        </div>
+        </span>
         {metadata.length > 0 && (
-          <p className={s.metadata}>{metadata.join(" · ")}</p>
+          <span className={s.metadata}>{metadata.join(" · ")}</span>
         )}
         {(badge !== undefined || trophy) && (
-          <div className={s.badgeRow}>
+          <span className={s.badgeRow}>
             {badge}
             {trophy && (
               <span className={s.trophy}>
                 <Icon name="trophy" size={16} /> Трофей
               </span>
             )}
-          </div>
+          </span>
         )}
-      </div>
-    </article>
+      </span>
+    </button>
   );
 }

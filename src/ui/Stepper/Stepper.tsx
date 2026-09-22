@@ -57,26 +57,21 @@ export function Stepper({
           <Icon name="minus" size={20} />
         </button>
         <div className={s.value}>
-          {value === null ? (
-            <span className={s.empty}>—</span>
-          ) : (
-            <>
-              <input
-                type="number"
-                className={s.input}
-                value={value}
-                min={min}
-                max={max}
-                step={step}
-                aria-label={label}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  onValueInput?.(raw === "" ? null : Number(raw));
-                }}
-              />
-              <span className={s.unit}>{unit}</span>
-            </>
-          )}
+          <input
+            type="number"
+            className={s.input}
+            value={value ?? ""}
+            placeholder="—"
+            min={min}
+            max={max}
+            step={step}
+            aria-label={label}
+            onChange={(e) => {
+              const raw = e.target.value;
+              onValueInput?.(raw === "" ? null : Number(raw));
+            }}
+          />
+          <span className={s.unit}>{unit}</span>
         </div>
         <button
           type="button"

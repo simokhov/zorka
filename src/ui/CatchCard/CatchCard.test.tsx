@@ -12,7 +12,7 @@ describe("CatchCard", () => {
         metadata={["08:40", "Старица", "Спиннинг"]}
       />,
     );
-    expect(screen.getByRole("heading", { name: "Щука" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Щука/ })).toBeInTheDocument();
     expect(screen.getByText("1 240 г")).toBeInTheDocument();
     expect(screen.getByText("08:40 · Старица · Спиннинг")).toBeInTheDocument();
   });
@@ -33,11 +33,20 @@ describe("CatchCard", () => {
     expect(screen.getByAltText("Судак на берегу")).toBeInTheDocument();
   });
 
-  it("opens details when the card is activated", async () => {
+  it("makes the whole card a single tap zone", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
-    render(<CatchCard species="Лещ" onClick={onClick} />);
+    render(
+      <CatchCard
+        species="Лещ"
+        weight="900 г"
+        metadata={["06:10"]}
+        onClick={onClick}
+      />,
+    );
     await user.click(screen.getByRole("button", { name: /Лещ/ }));
     expect(onClick).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByText("900 г"));
+    expect(onClick).toHaveBeenCalledTimes(2);
   });
 });
