@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Зорька — эскизы экранов (Duolingo-style)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  /* Токены Зорьки = токены Duolingo (iOS-референс awesome-design-html) */
+  --canvas:#ffffff; --canvas-soft:#FFF7E1; --surface:#F7F7F7;
+  --green:#58CC02; --green-deep:#46A302; --green-dark:#3C8A02;
+  --blue:#1CB0F6; --blue-deep:#0E92D2;
+  --red:#FF4B4B; --red-deep:#D43838;
+  --yellow:#FFC800; --yellow-deep:#E5B300;
+  --orange:#FF9600; --orange-deep:#E08400;
+  --purple:#CE82FF; --purple-deep:#B45EFF;
+  --gold:#FFD900;
+  --ink:#3C3C3C; --ink-soft:#5A5A5A; --ink-muted:#777777; --ink-dim:#AFAFAF;
+  --border:#E5E5E5; --border-soft:#F0F0F0; --locked:#E5E5E5; --locked-deep:#C0C0C0;
+  --font-ui:"Nunito",-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,monospace;
+  --r-min:4px; --r-md:12px; --r-lg:16px; --r-xl:20px; --r-2xl:24px; --r-pill:9999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#fff;color:var(--ink);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.container{max-width:1400px;margin:0 auto;padding:0 24px}
+
+/* ===== Шапка страницы ===== */
+.page-head{padding:44px 0 10px;text-align:center}
+.page-head .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:var(--r-pill);background:rgba(88,204,2,.12);color:var(--green-deep);font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+.page-head h1{font-size:clamp(36px,5vw,56px);font-weight:900;letter-spacing:-1.5px;line-height:1}
+.page-head h1 .g{color:var(--green)}
+.page-head p{color:var(--ink-soft);font-size:16px;margin-top:12px}
+
+/* ===== Ряд iPhone-эскизов ===== */
+.stage{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:34px;padding:40px 0 20px}
+.shot{display:flex;flex-direction:column;align-items:center;gap:0}
+.shot.center{transform:translateY(-18px)}
+.iphone{width:280px;aspect-ratio:9/19.5;background:linear-gradient(140deg,#2c2c2c,#0a0a0a 60%);border-radius:46px;padding:9px;position:relative;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.06),inset 0 -2px 0 rgba(0,0,0,.6),0 40px 80px rgba(88,204,2,.15),0 0 0 1px rgba(0,0,0,.08)}
+.iphone-screen{width:100%;height:100%;border-radius:38px;overflow:hidden;position:relative;background:#fff}
+.dynamic-island{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:96px;height:28px;background:#000;border-radius:999px;z-index:20}
+.status-bar{position:absolute;top:0;left:0;right:0;height:50px;display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0;z-index:15;font-size:12px;font-weight:700;color:#3C3C3C}
+.status-bar .sb-icons{display:flex;gap:4px;align-items:center;font-size:11px}
+.scr{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column;background:#fff}
+.shot-label{font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);letter-spacing:.6px;text-transform:uppercase;margin-top:14px}
+.shot-note{font-size:12.5px;color:var(--ink-soft);margin-top:4px;max-width:270px;text-align:center;line-height:1.45}
+
+/* ===== Общие элементы экранов ===== */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.6px;border-radius:14px;padding:14px 18px;width:100%}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 4px 0 var(--green-dark)}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--blue-deep)}
+.btn-orange{background:var(--orange);color:#fff;box-shadow:0 4px 0 var(--orange-deep)}
+.btn-light{background:#fff;color:var(--ink-soft);border:2px solid var(--border);box-shadow:0 4px 0 var(--border)}
+.tabbar{margin-top:auto;display:flex;background:#fff;border-top:2px solid var(--border);padding:8px 6px 18px;justify-content:space-around}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:800;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.3px}
+.tab.active{color:var(--green-deep)}
+.tab .ico{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:14px}
+.tab.active .ico{background:rgba(88,204,2,.12)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:800}
+.chip-soft{background:var(--surface);color:var(--ink-soft);border:2px solid var(--border-soft)}
+.sync-pending{background:rgba(255,150,0,.14);color:var(--orange-deep)}
+.sync-ok{background:rgba(88,204,2,.12);color:var(--green-deep)}
+
+/* ===== Экран: Запись поимки (центральный) ===== */
+.rec-top{display:flex;align-items:center;gap:10px;padding:6px 14px 10px}
+.rec-top .x{font-size:16px;color:var(--ink-muted);font-weight:900}
+.rec-top .steps{display:flex;gap:5px;flex:1}
+.rec-top .steps i{height:10px;flex:1;border-radius:9999px;background:#E5E5E5;box-shadow:inset 0 -3px 0 #D8D8D8}
+.rec-top .steps i.on{background:var(--green);box-shadow:inset 0 -3px 0 var(--green-dark)}
+.rec-title{padding:2px 16px 8px;font-size:19px;font-weight:900}
+.rec-sub{padding:0 16px 10px;font-size:12px;color:var(--ink-muted);font-weight:700}
+.species-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 14px 12px}
+.sp{border:2px solid var(--border);border-radius:14px;box-shadow:0 3px 0 var(--border);padding:9px 4px 7px;text-align:center;font-weight:800;font-size:10.5px;color:var(--ink-soft);background:#fff}
+.sp .em{font-size:20px;display:block;margin-bottom:3px}
+.sp.on{border-color:var(--green);box-shadow:0 3px 0 var(--green);color:var(--green-deep);background:rgba(88,204,2,.08)}
+.stepper{display:flex;align-items:center;gap:0;border:2px solid var(--border);border-radius:14px;box-shadow:0 3px 0 var(--border);overflow:hidden}
+.stepper button{width:46px;height:44px;background:#fff;color:var(--green-deep);font-size:22px;font-weight:900}
+.stepper button:last-child{color:var(--red-deep)}
+.stepper .val{flex:1;text-align:center;background:#fff}
+.stepper .val b{font-size:17px;font-weight:900}
+.stepper .val span{display:block;font-size:9px;font-weight:800;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 10px}
+.f-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin:0 0 5px 4px}
+.photo-strip{display:flex;gap:8px;padding:0 14px 12px}
+.photo-tile{width:74px;height:74px;border-radius:14px;background:var(--surface);border:2px dashed var(--border);display:grid;place-items:center;color:var(--ink-dim);font-size:11px;font-weight:800;text-align:center;line-height:1.3}
+.photo-tile.filled{border-style:solid;border-color:var(--green);background:linear-gradient(160deg,#84D960,#3E9E1F);color:#fff;font-size:26px;box-shadow:0 3px 0 var(--green-dark)}
+.ctx-chips{display:flex;gap:6px;padding:0 14px 14px;flex-wrap:wrap}
+.rec-foot{margin-top:auto;padding:10px 14px 22px;border-top:2px solid var(--border-soft);background:#fff}
+
+/* ===== Экран: Лента ===== */
+.feed-head{padding:8px 16px 10px;display:flex;justify-content:space-between;align-items:center}
+.feed-head .hello{font-size:15px;font-weight:900}
+.feed-head .hello small{display:block;font-size:10.5px;color:var(--ink-muted);font-weight:700}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--green);box-shadow:0 3px 0 var(--green-dark);display:grid;place-items:center;color:#fff;font-size:16px}
+.day-banner{background:var(--green);color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.day-banner .l{font-size:9.5px;font-weight:700;opacity:.85;text-transform:uppercase;letter-spacing:.5px}
+.day-banner .t{font-size:13.5px;font-weight:800}
+.day-banner .cnt{background:var(--green-deep);padding:5px 10px;border-radius:8px;font-size:12px;font-weight:900}
+.filter-row{display:flex;gap:6px;padding:10px 14px;overflow:hidden}
+.fchip{padding:5px 11px;border-radius:9999px;font-size:11px;font-weight:800;background:#fff;border:2px solid var(--border);box-shadow:0 2px 0 var(--border);color:var(--ink-soft);white-space:nowrap}
+.fchip.on{background:var(--green);border-color:var(--green);box-shadow:0 2px 0 var(--green-dark);color:#fff}
+.catch-card{margin:0 14px 10px;border:2px solid var(--border);border-radius:16px;box-shadow:0 4px 0 var(--border);overflow:hidden;background:#fff}
+.cc-main{display:flex;gap:10px;padding:10px 12px;align-items:center}
+.cc-em{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:24px;background:rgba(28,176,246,.12)}
+.cc-em.pred{background:rgba(255,75,75,.10)}
+.cc-name{font-size:14px;font-weight:900}
+.cc-meta{font-size:11px;color:var(--ink-muted);font-weight:700;margin-top:1px}
+.cc-right{margin-left:auto;text-align:right}
+.cc-w{font-size:14px;font-weight:900;color:var(--green-deep)}
+.cc-time{font-size:10px;color:var(--ink-dim);font-weight:700}
+.cc-foot{display:flex;gap:5px;flex-wrap:wrap;padding:8px 12px;background:var(--surface);border-top:2px solid var(--border-soft)}
+.wx{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:800;color:var(--ink-soft);background:#fff;border:2px solid var(--border-soft);border-radius:9999px;padding:2px 8px}
+
+/* ===== Экран: Карта ===== */
+.map-area{position:relative;flex:1;background:linear-gradient(160deg,#E8F4E2 0%,#DCEED2 55%,#CFE8C8 100%);overflow:hidden}
+.map-area .water{position:absolute;background:#A9D8F5;border-radius:50%}
+.map-area .water.w1{width:230px;height:120px;left:-40px;top:120px;transform:rotate(-12deg);box-shadow:inset 0 -6px 0 rgba(14,146,210,.25)}
+.map-area .water.w2{width:120px;height:70px;left:120px;top:290px;transform:rotate(8deg);box-shadow:inset 0 -4px 0 rgba(14,146,210,.25)}
+.map-area .shore{position:absolute;background:#C9E4B4;border-radius:50%}
+.pin{position:absolute;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:15px;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15);z-index:5}
+.pin.hot{background:var(--red);color:#fff;box-shadow:0 4px 0 var(--red-deep);animation:ping 2.4s infinite}
+.pin.me{width:22px;height:22px;background:var(--blue);box-shadow:0 0 0 6px rgba(28,176,246,.25),0 3px 0 var(--blue-deep)}
+@keyframes ping{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.map-top{position:absolute;top:8px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:10}
+.map-pill{background:#fff;border-radius:9999px;padding:7px 12px;font-size:11.5px;font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.12);display:flex;align-items:center;gap:6px}
+.map-fabs{position:absolute;right:10px;top:64px;display:flex;flex-direction:column;gap:8px;z-index:10}
+.fab{width:38px;height:38px;border-radius:12px;background:#fff;box-shadow:0 3px 0 rgba(0,0,0,.12);display:grid;place-items:center;font-size:16px}
+.place-sheet{background:#fff;border-top:2px solid var(--border);border-radius:20px 20px 0 0;padding:14px 16px 12px;box-shadow:0 -2px 0 var(--border-soft)}
+.place-sheet .grab{width:40px;height:5px;border-radius:9999px;background:var(--border);margin:0 auto 10px}
+.place-name{font-size:15px;font-weight:900;display:flex;align-items:center;gap:7px}
+.place-weather{display:flex;gap:6px;margin:9px 0 11px}
+.wcard{flex:1;background:var(--surface);border-radius:12px;padding:7px 4px;text-align:center;border:2px solid var(--border-soft)}
+.wcard .d{font-size:9px;font-weight:800;color:var(--ink-muted);text-transform:uppercase}
+.wcard .t{font-size:13px;font-weight:900;margin-top:2px}
+.wcard .e{font-size:15px}
+.map-fab-main{position:absolute;left:50%;bottom:110px;transform:translateX(-50%);z-index:12;width:190px}
+
+/* ===== Экран: Статистика ===== */
+.stats-head{padding:8px 16px 12px}
+.stats-head h2{font-size:19px;font-weight:900}
+.stats-head .sub{font-size:11.5px;color:var(--ink-muted);font-weight:700}
+.range-row{display:flex;gap:6px;padding:0 14px 12px}
+.trophy-row{display:flex;gap:10px;padding:0 14px 12px}
+.troph{flex:1;border:2px solid var(--border);border-radius:14px;box-shadow:0 3px 0 var(--border);padding:9px 6px;text-align:center;background:#fff}
+.troph .em{font-size:22px}
+.troph .n{font-size:10px;font-weight:800;color:var(--ink-muted);margin-top:3px;text-transform:uppercase}
+.troph .v{font-size:13px;font-weight:900;color:var(--green-deep)}
+.troph.gold{border-color:var(--gold);box-shadow:0 3px 0 #D4B400;background:rgba(255,217,0,.08)}
+.chart-card{margin:0 14px 12px;border:2px solid var(--border);border-radius:16px;box-shadow:0 4px 0 var(--border);padding:12px}
+.chart-card h3{font-size:12.5px;font-weight:900;margin-bottom:10px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:86px}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.bar i{display:block;border-radius:6px 6px 4px 4px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.12)}
+.bar .bl{font-size:9px;font-weight:800;color:var(--ink-dim);text-align:center;margin-top:5px;text-transform:uppercase}
+.split-card{margin:0 14px 12px;background:var(--surface);border-radius:16px;padding:12px 14px;border:2px solid var(--border-soft)}
+.split-card h3{font-size:12.5px;font-weight:900;margin-bottom:8px}
+.srow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.srow .lbl{font-size:11.5px;font-weight:800;width:76px}
+.srow .track{flex:1;height:12px;border-radius:9999px;background:#E5E5E5;overflow:hidden}
+.srow .fill{height:100%;border-radius:9999px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+.srow .pc{font-size:11px;font-weight:900;width:34px;text-align:right;color:var(--ink-muted)}
+
+/* ===== Экран: Вход ===== */
+.auth{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column;align-items:center;background:var(--canvas-soft)}
+.auth .logo{width:74px;height:74px;border-radius:26px;background:var(--green);box-shadow:0 6px 0 var(--green-dark);display:grid;place-items:center;font-size:38px;margin-top:44px}
+.auth h2{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-top:16px}
+.auth p{font-size:12.5px;color:var(--ink-muted);font-weight:700;margin-top:4px}
+.auth-form{width:100%;padding:22px 22px 0;display:flex;flex-direction:column;gap:12px}
+.inp label{display:block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:5px}
+.inp input{width:100%;border:2px solid var(--border);border-radius:14px;box-shadow:0 4px 0 var(--border);padding:12px 14px;font-family:inherit;font-size:14px;font-weight:800;color:var(--ink);background:#fff;outline:none}
+.inp input:focus{border-color:var(--blue);box-shadow:0 4px 0 var(--blue-deep)}
+.auth .btn{width:auto;margin-top:6px}
+.auth .hint{margin-top:14px;font-size:12px;font-weight:800;color:var(--ink-muted)}
+.auth .hint b{color:var(--green-deep)}
+.offline-banner{position:absolute;top:52px;left:10px;right:10px;background:rgba(255,150,0,.15);border:2px solid var(--orange);box-shadow:0 3px 0 var(--orange-deep);color:var(--orange-deep);border-radius:12px;padding:6px 12px;font-size:10.5px;font-weight:800;display:flex;align-items:center;gap:6px;z-index:25}
+
+/* ===== Секция токенов ===== */
+.tokens{padding:56px 0 70px}
+.tokens h2{text-align:center;font-size:28px;font-weight:900;letter-spacing:-.8px;margin-bottom:8px}
+.tokens p{text-align:center;color:var(--ink-muted);font-size:14px;font-weight:700;margin-bottom:30px}
+.tk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.tk-card{border:2px solid var(--border);border-radius:18px;box-shadow:0 4px 0 var(--border);padding:16px;background:#fff}
+.tk-card h4{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:12px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:52px}
+.sw i{display:block;height:38px;border-radius:10px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15)}
+.sw span{display:block;font-family:var(--font-mono);font-size:8.5px;color:var(--ink-muted);margin-top:4px;text-align:center}
+.tk-note{font-size:12.5px;color:var(--ink-soft);font-weight:700;line-height:1.55}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-head">
+    <span class="eyebrow"><span>🎣</span> Эскизы MVP · стиль Duolingo</span>
+    <h1>Зорька<span class="g">.</span>sketches</h1>
+    <p>Пять экранов MVP в токенах Duolingo (Nunito, 3D-кнопки, насыщенная палитра). Центральный — ключевой сценарий: запись поимки одной рукой за 20 секунд.</p>
+  </div>
+
+  <div class="stage">
+
+    <!-- ================= Лента улова ================= -->
+    <div class="shot">
+      <div class="iphone"><div class="iphone-screen">
+        <div class="dynamic-island"></div>
+        <div class="status-bar"><span>9:41</span><span class="sb-icons">▮▮▮ ᯤ ▰</span></div>
+        <div class="scr">
+          <div class="feed-head">
+            <div class="hello">Привет, Саша! <small>Сезон 2025 · 34 поимки</small></div>
+            <div class="avatar">🎣</div>
+          </div>
+          <div class="day-banner">
+            <div><div class="l">Сегодня</div><div class="t">Старый затон · фидер</div></div>
+            <div class="cnt">3 хв</div>
+          </div>
+          <div class="filter-row">
+            <span class="fchip on">Все</span><span class="fchip">Лещ</span><span class="fchip">Окунь</span><span class="fchip">Судак</span><span class="fchip">Места</span>
+          </div>
+          <div class="catch-card">
+            <div class="cc-main">
+              <div class="cc-em pred">🦈</div>
+              <div><div class="cc-name">Щука</div><div class="cc-meta">Старый затон · спиннинг</div></div>
+              <div class="cc-right"><div class="cc-w">2 400 г</div><div class="cc-time">сегодня 06:12</div></div>
+            </div>
+            <div class="cc-foot"><span class="chip sync-pending">⏳ Ждёт сети</span><span class="wx">🌫 11°</span><span class="wx">↓1011</span><span class="wx">💨 3 м/с</span></div>
+          </div>
+          <div class="catch-card">
+            <div class="cc-main">
+              <div class="cc-em">🐟</div>
+              <div><div class="cc-name">Лещ</div><div class="cc-meta">Старый затон · фидер</div></div>
+              <div class="cc-right"><div class="cc-w">1 180 г</div><div class="cc-time">вчера 17:40</div></div>
+            </div>
+            <div class="cc-foot"><span class="chip sync-ok">✓ Синхронизировано</span><span class="wx">⛅ 15°</span><span class="wx">↓1009</span></div>
+          </div>
+          <div class="catch-card">
+            <div class="cc-main">
+              <div class="cc-em pred">🐠</div>
+              <div><div class="cc-name">Окунь × 4</div><div class="cc-meta">Дамба · микроджиг</div></div>
+              <div class="cc-right"><div class="cc-w">до 320 г</div><div class="cc-time">12 мая</div></div>
+            </div>
+            <div class="cc-foot"><span class="chip sync-ok">✓ Синхронизировано</span><span class="wx">☀ 18°</span><span class="wx">↓1015</span></div>
+          </div>
+          <div class="tabbar">
+            <span class="tab active"><span class="ico">📋</span>Лента</span>
+            <span class="tab"><span class="ico">🗺</span>Карта</span>
+            <span class="tab"><span class="ico">＋</span>Поимка</span>
+            <span class="tab"><span class="ico">📊</span>Статы</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="shot-label">01 · Лента улова</div>
+      <div class="shot-note">Фильтры по видам/местам, статусы синхронизации outbox (ADR-0004) прямо на карточках.</div>
+    </div>
+
+    <!-- ================= Запись поимки (центральный) ================= -->
+    <div class="shot center">
+      <div class="iphone"><div class="iphone-screen">
+        <div class="dynamic-island"></div>
+        <div class="status-bar"><span>9:41</span><span class="sb-icons">▮▮ ᯤ ▰</span></div>
+        <div class="scr">
+          <div class="rec-top">
+            <span class="x">✕</span>
+            <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+            <span style="font-size:13px;font-weight:800;color:var(--green-deep)">3/3</span>
+          </div>
+          <div class="rec-title">Что поймал? 🎣</div>
+          <div class="rec-sub">Шаг 2 из 3 — параметры трофея</div>
+          <div class="offline-banner">📡 Нет сети — запись сохранится локально</div>
+          <div class="species-grid">
+            <span class="sp on"><span class="em">🐟</span>Лещ</span>
+            <span class="sp"><span class="em">🐠</span>Окунь</span>
+            <span class="sp"><span class="em">🦈</span>Щука</span>
+            <span class="sp"><span class="em">🎣</span>Ещё 48</span>
+          </div>
+          <div class="field-row">
+            <div><div class="f-label">Вес</div>
+              <div class="stepper"><button>−</button><div class="val"><b>1 180</b><span>грамм</span></div><button>＋</button></div>
+            </div>
+            <div><div class="f-label">Длина</div>
+              <div class="stepper"><button>−</button><div class="val"><b>42</b><span>см</span></div><button>＋</button></div>
+            </div>
+          </div>
+          <div class="photo-strip">
+            <div class="photo-tile filled">📷</div>
+            <div class="photo-tile">＋ Фото<br>улова</div>
+          </div>
+          <div class="ctx-chips">
+            <span class="chip chip-soft">📍 GPS: 54.19, 38.2 ✓</span>
+            <span class="chip chip-soft">🌫 Погода подставится</span>
+            <span class="chip chip-soft">🎣 Фидер · червь</span>
+          </div>
+          <div class="rec-foot">
+            <button class="btn btn-green">Сохранить поимку ✓</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="shot-label">02 · Запись поимки ⭐</div>
+      <div class="shot-note">Ключевой сценарий: вид из справочника → вес/длина степперами → фото. GPS и погода — автоматически. Оффлайн-баннер честно сообщает о локальном сохранении.</div>
+    </div>
+
+    <!-- ================= Карта и места ================= -->
+    <div class="shot">
+      <div class="iphone"><div class="iphone-screen">
+        <div class="dynamic-island"></div>
+        <div class="status-bar"><span>9:41</span><span class="sb-icons">▮▮▮ ᯤ ▰</span></div>
+        <div class="scr">
+          <div class="map-area">
+            <div class="shore" style="width:180px;height:90px;left:40px;top:250px;transform:rotate(-8deg)"></div>
+            <div class="water w1"></div>
+            <div class="water w2"></div>
+            <div class="map-top">
+              <span class="map-pill">🔎 Стандартная · Нас. пункты</span>
+              <span class="map-pill">⌖ Центрировать</span>
+            </div>
+            <div class="map-fabs"><span class="fab">＋</span><span class="fab">◈</span></div>
+            <span class="pin hot" style="left:38px;top:196px">🔥</span>
+            <span class="pin" style="left:150px;top:150px">🐟</span>
+            <span class="pin" style="left:64px;top:308px">⭐</span>
+            <span class="pin me" style="left:170px;top:210px"></span>
+          </div>
+          <div class="place-sheet">
+            <div class="grab"></div>
+            <div class="place-name">🔥 Старый затон <span class="chip sync-ok" style="margin-left:auto">17 поимок</span></div>
+            <div class="place-weather">
+              <div class="wcard"><div class="d">Сейчас</div><div class="e">⛅</div><div class="t">14°</div></div>
+              <div class="wcard"><div class="d">Давл.</div><div class="e">↓</div><div class="t">1011</div></div>
+              <div class="wcard"><div class="d">Ветер</div><div class="e">💨</div><div class="t">3 м/с</div></div>
+              <div class="wcard"><div class="d">Завтра</div><div class="e">🌧</div><div class="t">16°</div></div>
+            </div>
+            <button class="btn btn-blue">Записать поимку здесь</button>
+          </div>
+          <div class="tabbar">
+            <span class="tab"><span class="ico">📋</span>Лента</span>
+            <span class="tab active"><span class="ico">🗺</span>Карта</span>
+            <span class="tab"><span class="ico">＋</span>Поимка</span>
+            <span class="tab"><span class="ico">📊</span>Статы</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="shot-label">03 · Карта и места</div>
+      <div class="shot-note">Точки поимок и сохранённые места на карте (ADR-0005); карточка места с погодой и прогнозом из OWM-кэша (ADR-0006).</div>
+    </div>
+
+    <!-- ================= Статистика ================= -->
+    <div class="shot">
+      <div class="iphone"><div class="iphone-screen">
+        <div class="dynamic-island"></div>
+        <div class="status-bar"><span>9:41</span><span class="sb-icons">▮▮▮ ᯤ ▰</span></div>
+        <div class="scr">
+          <div class="stats-head">
+            <h2>Моя статистика 📊</h2>
+            <div class="sub">Всё, что вы хотели знать о клёве</div>
+          </div>
+          <div class="range-row">
+            <span class="fchip on">Сезон</span><span class="fchip">Месяц</span><span class="fchip">Неделя</span><span class="fchip">Всё время</span>
+          </div>
+          <div class="trophy-row">
+            <div class="troph gold"><div class="em">🏆</div><div class="n">Трофей</div><div class="v">2.4 кг щука</div></div>
+            <div class="troph"><div class="em">🐟</div><div class="n">Видов</div><div class="v">9</div></div>
+            <div class="troph"><div class="em">🎯</div><div class="n">Хвосты</div><div class="v">34</div></div>
+          </div>
+          <div class="chart-card">
+            <h3>Клёв по месяцам</h3>
+            <div class="bars">
+              <div class="bar"><i style="height:30%;background:var(--blue);box-shadow:inset 0 -4px 0 var(--blue-deep)"></i><span class="bl">май</span></div>
+              <div class="bar"><i style="height:78%;background:var(--green);box-shadow:inset 0 -4px 0 var(--green-dark)"></i><span class="bl">июн</span></div>
+              <div class="bar"><i style="height:56%;background:var(--green);box-shadow:inset 0 -4px 0 var(--green-dark)"></i><span class="bl">июл</span></div>
+              <div class="bar"><i style="height:92%;background:var(--gold);box-shadow:inset 0 -4px 0 #D4B400"></i><span class="bl">авг</span></div>
+              <div class="bar"><i style="height:44%;background:var(--orange);box-shadow:inset 0 -4px 0 var(--orange-deep)"></i><span class="bl">сен</span></div>
+            </div>
+          </div>
+          <div class="split-card">
+            <h3>Погода vs клёв</h3>
+            <div class="srow"><span class="lbl">↓ 1005–1010</span><div class="track"><div class="fill" style="width:72%;background:var(--green);box-shadow:inset 0 -3px 0 var(--green-dark)"></div></div><span class="pc">72%</span></div>
+            <div class="srow"><span class="lbl">Зорька 4–6 утра</span><div class="track"><div class="fill" style="width:58%;background:var(--blue);box-shadow:inset 0 -3px 0 var(--blue-deep)"></div></div><span class="pc">58%</span></div>
+            <div class="srow" style="margin-bottom:0"><span class="lbl">Ю-З ветер</span><div class="track"><div class="fill" style="width:41%;background:var(--orange);box-shadow:inset 0 -3px 0 var(--orange-deep)"></div></div><span class="pc">41%</span></div>
+          </div>
+          <div class="tabbar">
+            <span class="tab"><span class="ico">📋</span>Лента</span>
+            <span class="tab"><span class="ico">🗺</span>Карта</span>
+            <span class="tab"><span class="ico">＋</span>Поимка</span>
+            <span class="tab active"><span class="ico">📊</span>Статы</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="shot-label">04 · Статистика</div>
+      <div class="shot-note">Трофеи по видам, клёв по месяцам и разрез «погода vs клёв» из денормализованных снимков погоды поимок.</div>
+    </div>
+
+    <!-- ================= Вход ================= -->
+    <div class="shot">
+      <div class="iphone"><div class="iphone-screen">
+        <div class="dynamic-island"></div>
+        <div class="status-bar"><span>9:41</span><span class="sb-icons">▮▮▮ ᯤ ▰</span></div>
+        <div class="auth">
+          <div class="logo">🌅</div>
+          <h2>Зорька</h2>
+          <p>Учёт улова, погода и статистика клёва</p>
+          <div class="auth-form">
+            <div class="inp"><label>Email</label><input value="sasha@fisher.ru" /></div>
+            <div class="inp"><label>Пароль</label><input type="password" value="••••••••" /></div>
+            <button class="btn btn-green" style="width:100%">Войти →</button>
+            <button class="btn btn-light" style="width:100%">Создать аккаунт</button>
+            <div class="hint">Забыли пароль? <b>Восстановить</b></div>
+            <div class="hint" style="font-size:10.5px;color:var(--ink-dim)">Этап 2: вход через Google и Яндекс (ADR-0008)</div>
+          </div>
+        </div>
+      </div></div>
+      <div class="shot-label">05 · Вход</div>
+      <div class="shot-note">Логин+пароль (ADR-0008), восстановление пароля с первого дня, место под будущие OAuth-кнопки.</div>
+    </div>
+
+  </div>
+
+  <!-- ================= Токены ================= -->
+  <div class="tokens">
+    <h2>Дизайн-токены Зорьки</h2>
+    <p>Позаимствованы у Duolingo (референс awesome-design-html): Nunito · насыщенная палитра · фирменные 3D-кнопки</p>
+    <div class="tk-grid">
+      <div class="tk-card">
+        <h4>Палитра</h4>
+        <div class="swatches">
+          <div class="sw"><i style="background:#58CC02"></i><span>green</span></div>
+          <div class="sw"><i style="background:#1CB0F6"></i><span>blue</span></div>
+          <div class="sw"><i style="background:#FF9600"></i><span>orange</span></div>
+          <div class="sw"><i style="background:#FFC800"></i><span>yellow</span></div>
+          <div class="sw"><i style="background:#FF4B4B"></i><span>red</span></div>
+          <div class="sw"><i style="background:#CE82FF"></i><span>purple</span></div>
+        </div>
+      </div>
+      <div class="tk-card">
+        <h4>Кнопки — 3D-подпись стиля</h4>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-green" style="width:100%">Сохранить поимку</button>
+          <button class="btn btn-light" style="width:100%">Отмена</button>
+        </div>
+      </div>
+      <div class="tk-card">
+        <h4>Смысловые привязки</h4>
+        <div class="tk-note">
+          <b style="color:var(--green-deep)">Зелёный</b> — запись/сохранение/синк ✓<br>
+          <b style="color:var(--blue-deep)">Синий</b> — вода, погода, карта<br>
+          <b style="color:var(--orange-deep)">Оранжевый</b> — оффлайн, «ждёт сети»<br>
+          <b style="color:var(--red-deep)">Красный</b> — хищники, горячие точки<br>
+          <b style="color:#B48900">Золото</b> — трофеи
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
