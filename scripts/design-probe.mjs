@@ -30,14 +30,36 @@ function freePort(candidate) {
 
 async function startPreview() {
   const finalPort = await freePort(port);
+  // Целимся в bin vite напрямую: спавн через `pnpm preview` оставляет сироту —
+  // SIGTERM попадает в pnpm-обёртку, а vite продолжает жить.
+  const viteBin = path.join(root, "node_modules", "vite", "bin", "vite.js");
+  // Windows (не наш целевой WSL) потребовал бы shell: true для .js в PATH;
+  // здесь это не нужно — запускаем через process.execPath (node) напрямую.
   const child = spawn(
-    "pnpm",
-    ["preview", "--port", String(finalPort), "--strictPort"],
+    process.execPath,
+    [viteBin, "preview", "--port", String(finalPort), "--strictPort"],
     {
       cwd: root,
       stdio: ["ignore", "pipe", "pipe"],
+      detached: true, // отдельная группа процессов, чтобы убить всё дерево разом
     },
   );
+  const killGroup = () => {
+    if (child.pid && child.exitCode === null) {
+      try {
+        process.kill(-child.pid, "SIGTERM");
+      } catch {
+        /* уже мёртв */
+      }
+    }
+  };
+  process.on("exit", killGroup);
+  for (const sig of ["SIGINT", "SIGTERM"]) {
+    process.on(sig, () => {
+      killGroup();
+      process.exit(2);
+    });
+  }
   child.stdout.on("data", () => {});
   child.stderr.on("data", (d) => process.stderr.write(d));
   const base = `http://localhost:${finalPort}`;
@@ -50,7 +72,7 @@ async function startPreview() {
     }
     await new Promise((r) => setTimeout(r, 250));
   }
-  child.kill();
+  killGroup();
   throw new Error("vite preview не поднялся");
 }
 
@@ -81,8 +103,14 @@ async function probePage(page, label, url) {
         const r = el.getBoundingClientRect();
         if (r.width === 0 && r.height === 0) continue;
         const isFixed = fixedLike(el);
-        // a) горизонтальное переполнение страницы
-        if (!isFixed && r.right > vw + 1) {
+        // a) горизонтальное переполнение страницы (html/body игнорируем —
+        // их правый край всегда совпадает с viewport и не информативен)
+        if (
+          !isFixed &&
+          r.right > vw + 1 &&
+          el.tagName !== "HTML" &&
+          el.tagName !== "BODY"
+        ) {
           out.offscreen.push(
             `${el.tagName.toLowerCase()}${el.className && typeof el.className === "string" ? "." + el.className.split(/\s+/).slice(0, 2).join(".") : ""} right=${Math.round(r.right)} > ${vw}`,
           );
@@ -115,9 +143,7 @@ async function probePage(page, label, url) {
     violations++;
     log("  ! горизонтальное переполнение страницы");
   }
-  const offscreen = result.offscreen.filter(
-    (l) => !l.startsWith("html") && !l.startsWith("body"),
-  );
+  const offscreen = result.offscreen;
   if (offscreen.length) {
     log(`  элементы за правым краем viewport: ${offscreen.length}`);
     for (const l of offscreen.slice(0, 20)) log(`    - ${l}`);
@@ -158,7 +184,14 @@ async function main() {
     }
   } finally {
     await browser.close();
-    preview.child.kill();
+    // Убиваем группу (detached: true), а не только прямой потомок.
+    if (preview.child.pid && preview.child.exitCode === null) {
+      try {
+        process.kill(-preview.child.pid, "SIGTERM");
+      } catch {
+        /* уже мёртв */
+      }
+    }
   }
   log(`\nИтого нарушений: ${violations} → exit ${bad ? 1 : 0}`);
   process.exit(bad ? 1 : 0);
