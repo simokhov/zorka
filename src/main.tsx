@@ -2,9 +2,12 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { App } from "./app/App";
+import { startSyncEngine } from "./data/syncEngine";
 import "./styles/fonts.css";
 import "./styles/tokens.css";
 import "./styles/base.css";
+
+startSyncEngine();
 
 const container = document.getElementById("root");
 if (!container) {

@@ -7,7 +7,7 @@ export interface TabBarItem {
   to: string;
   label: string;
   icon: IconName;
-  badge?: number;
+  badge?: number | undefined;
 }
 
 export type TabBarCenterItem = Omit<TabBarItem, "badge">;

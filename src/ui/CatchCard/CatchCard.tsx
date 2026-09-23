@@ -6,7 +6,7 @@ import s from "./CatchCard.module.css";
 
 export interface CatchCardProps {
   species: string;
-  weight?: string;
+  weight?: string | undefined;
   photo?: { src: string; alt: string };
   metadata?: string[];
   badge?: ReactNode;
