@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "probe": "node scripts/design-probe.mjs",
+    "icons": "node scripts/generate-icons.mjs",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
     "lint:css": "stylelint \"src/**/*.css\"",
