@@ -1,0 +1,30 @@
+/* Зорька. Общий layout защищённой части: заголовок экрана + контент над таб-баром. */
+
+.shell {
+  min-height: 100dvh;
+  padding-bottom: calc(
+    var(--space-below-tabbar) + 56px + env(safe-area-inset-bottom)
+  );
+  background: var(--color-bg);
+}
+
+.header {
+  padding: var(--space-5) var(--space-5) var(--space-2);
+}
+
+.title {
+  margin: 0;
+  font: 600 var(--font-h2);
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font: 400 var(--font-meta);
+  color: var(--color-ink-muted);
+}
+
+.bannerWrap {
+  padding: 0 var(--space-5) var(--space-2);
+}

@@ -32,5 +32,8 @@ export type { TabBarItem, TabBarProps } from "./TabBar/TabBar";
 export { SyncBadge } from "./SyncBadge/SyncBadge";
 export type { SyncBadgeProps, SyncBadgeState } from "./SyncBadge/SyncBadge";
 
+export { EmptyState } from "./EmptyState/EmptyState";
+export type { EmptyStateProps } from "./EmptyState/EmptyState";
+
 export { Icon } from "./icons/Icon";
 export type { IconName, IconProps, IconSize } from "./icons/Icon";

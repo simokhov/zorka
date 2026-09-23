@@ -25,7 +25,7 @@ export interface FloatInputProps extends NativeInputRest {
   defaultValue?: string;
   onChange?: (value: string) => void;
   onBlur?: () => void;
-  error?: string;
+  error?: string | undefined;
   disabled?: boolean;
   multiline?: boolean;
   required?: boolean;
