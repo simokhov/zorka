@@ -1,0 +1,131 @@
+# Зорька: self-host Supabase + nginx-фронт на одной VM.
+name: zorka
+
+services:
+  supabase-db:
+    image: supabase/postgres:15.8.1.049
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  supabase-auth:
+    image: supabase/gotrue:v2.164.0
+    restart: unless-stopped
+    depends_on:
+      supabase-db: { condition: service_healthy }
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      API_EXTERNAL_URL: ${SITE_URL}/sb
+      GOTRUE_API_PORT: 9999
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@supabase-db:5432/postgres
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true" # MVP: подтверждение письмом включим вместе с SMTP
+      GOTRUE_SITE_URL: ${SITE_URL}
+      GOTRUE_DISABLE_SIGNUP: "false"
+    healthcheck:
+      # В образе gotrue есть busybox wget (проверено на supabase/gotrue:v2.164.0).
+      test:
+        ["CMD-SHELL", "wget -q -O- http://localhost:9999/health | grep -q live"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  supabase-rest:
+    image: postgrest/postgrest:v12.2.0
+    restart: unless-stopped
+    depends_on:
+      supabase-db: { condition: service_healthy }
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@supabase-db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+
+  supabase-storage:
+    image: supabase/storage-api:v1.0.6
+    restart: unless-stopped
+    depends_on:
+      supabase-db: { condition: service_healthy }
+    volumes:
+      - storage-data:/var/lib/storage
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_KEY}
+      POSTGREST_URL: http://supabase-rest:3000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@supabase-db:5432/postgres
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      GLOBAL_S3_BUCKET: not-used
+
+  supabase-edge:
+    image: supabase/edge-runtime:v1.74.3
+    restart: unless-stopped
+    depends_on:
+      supabase-db: { condition: service_healthy }
+    volumes:
+      - /opt/zorka/functions:/home/deno/functions
+    environment:
+      EDGE_RUNTIME_SEED: "true"
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_KEY}
+      OWM_API_KEY: ${OWM_API_KEY}
+
+  kong:
+    image: kong:2.8.1
+    restart: unless-stopped
+    depends_on:
+      supabase-auth: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      KONG_DATABASE: "off"
+      # Рендеренный kong.yml кладём в /usr/local/kong (KONG_PREFIX) — uid 100 (kong)
+      # не имеет прав на /var/lib/kong в образе kong:2.8.1 (проверено).
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-size-limiting
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64x160k
+    volumes:
+      - ./kong.yml.tmpl:/templates/kong.yml.tmpl:ro
+      - ./kong-entrypoint.sh:/entrypoint.sh:ro
+    entrypoint: ["sh", "/entrypoint.sh"]
+
+  front:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - kong
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /opt/zorka/current:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+
+  supabase-cli:
+    image: supabase/cli:v2.117.0
+    profiles: ["tools"]
+    volumes:
+      - /opt/zorka/migrations:/workspace/migrations:ro
+    working_dir: /workspace
+
+volumes:
+  db-data:
+  storage-data:
+  functions-src:
