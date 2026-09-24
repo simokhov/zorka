@@ -5,6 +5,9 @@ services:
   supabase-db:
     image: supabase/postgres:15.8.1.049
     restart: unless-stopped
+    ports:
+      # Для миграций: CLI на раннере заходит по SSH-туннелю (127.0.0.1 не наружу).
+      - "127.0.0.1:5432:5432"
     volumes:
       -       db-data:/var/lib/postgresql/data
       - ./db-init-roles.sh:/docker-entrypoint-initdb.d/99-init-roles.sh:ro

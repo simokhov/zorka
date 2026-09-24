@@ -1,0 +1,99 @@
+name: CD
+
+# Деплой в стат/Supabase-стек на VM (см. спеку CD и deploy/README.md).
+# Миграции: никаких docker-образов supabase/cli больше нет — CLI запускается
+# на раннере (pnpm dlx) через SSH-туннель к Postgres (127.0.0.1:5432 на VM).
+on:
+  push:
+    branches: [main]
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        env:
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+          PUB_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          PG_PASS: ${{ secrets.POSTGRES_PASSWORD }}
+        run: |
+          if [ -n "$VM_HOST" ] && [ -n "$VM_SSH_KEY" ] && [ -n "$PUB_KEY" ] && [ -n "$PG_PASS" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "VM-секреты не настроены (VM_HOST, VM_SSH_KEY, VITE_SUPABASE_PUBLISHABLE_KEY, POSTGRES_PASSWORD) — CD пропущен"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: guard
+    if: guard.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    concurrency: deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 12 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build
+        env:
+          VITE_SUPABASE_URL: https://${{ secrets.VM_HOST }}/sb
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: pnpm build
+
+      - name: SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Upload release
+        run: |
+          SHA=${GITHUB_SHA::8}
+          rsync -az --delete dist/ deploy@${{ secrets.VM_HOST }}:/opt/zorka/releases/$SHA/
+          rsync -az supabase/migrations/ deploy@${{ secrets.VM_HOST }}:/opt/zorka/migrations/
+          rsync -az supabase/functions/ deploy@${{ secrets.VM_HOST }}:/opt/zorka/functions/
+
+      - name: Switch release
+        run: >
+          ssh deploy@${{ secrets.VM_HOST }}
+          "ln -sfn /opt/zorka/releases/${GITHUB_SHA::8} /opt/zorka/current &&
+           docker compose -p zorka -f /opt/zorka/compose/docker-compose.yml --env-file /opt/zorka/compose/.env up -d front"
+
+      - name: Migrations (tunnel + CLI on runner)
+        run: |
+          ssh -f -N -L 5433:localhost:5432 deploy@${{ secrets.VM_HOST }}
+          SSH_PID=$(pgrep -f "ssh -f -N -L 5433" | head -1)
+          trap "kill $SSH_PID" EXIT
+          pnpm dlx supabase@2 db push --db-url "postgres://supabase_admin:${POSTGRES_PASSWORD}@127.0.0.1:5433/postgres?sslmode=disable"
+
+      - name: Edge functions restart
+        run: >
+          ssh deploy@${{ secrets.VM_HOST }}
+          "cd /opt/zorka/compose &&
+           docker compose --env-file .env restart supabase-edge"
+
+      - name: Health check (HTTP; после TLS — перключить на HTTPS)
+        run: |
+          for i in 1 2 3 4 5; do
+            curl -fsS http://${{ secrets.VM_HOST }}/ | grep -q '/assets/' && front=ok || front=fail
+            curl -fsS http://${{ secrets.VM_HOST }}/sb/auth/v1/health | grep -q GoTrue && auth=ok || auth=fail
+            [ "$front" = ok ] && [ "$auth" = ok ] && exit 0
+            sleep 10
+          done
+          exit 1
+
+      - name: Cleanup old releases (keep 3)
+        if: success()
+        run: >
+          ssh deploy@${{ secrets.VM_HOST }}
+          "ls -1dt /opt/zorka/releases/* | tail -n +4 | xargs -r rm -rf"
