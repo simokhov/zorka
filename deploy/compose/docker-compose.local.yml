@@ -1,0 +1,21 @@
+# deploy/compose/docker-compose.local.yml — overrides for LOCAL testing only.
+# Usage: docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+# Local host ports avoid the pre-existing dev Supabase stack (54321-54327, 8080-8090).
+services:
+  supabase-db:
+    ports: !override
+      - "127.0.0.1:54329:5432"
+
+  front:
+    ports: !override
+      - "8180:80"
+    volumes:
+      - ./dist-test:/usr/share/nginx/html:ro
+
+  supabase-edge:
+    volumes: !override
+      - ../../supabase/functions:/home/deno/functions:ro
+
+  supabase-cli:
+    volumes: !override
+      - ../../supabase/migrations:/workspace/migrations:ro

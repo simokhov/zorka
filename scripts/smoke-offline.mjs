@@ -41,10 +41,10 @@ await page.waitForFunction(
 console.log("sync on reconnect OK");
 
 const { createClient } = await import("@supabase/supabase-js");
-const sb = createClient(
-  "http://127.0.0.1:54321",
-  "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH",
-);
+const SB_URL = process.env.SB_URL ?? "http://127.0.0.1:54321";
+const SB_KEY =
+  process.env.SB_KEY ?? "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH";
+const sb = createClient(SB_URL, SB_KEY);
 await sb.auth.signInWithPassword({ email, password: "password123" });
 const { data } = await sb.from("catches").select("id");
 console.log("catches in postgres =", data?.length ?? 0);
