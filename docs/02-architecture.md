@@ -80,8 +80,8 @@
 
 ## 7. Развёртывание и среда
 
-- **Клиент:** статический бандл (Vite), хостинг — любой CDN (MVP: Vercel/Netlify); CI собирает и деплоит из main.
-- **Бэкенд:** Supabase-проект (cloud). Миграции схемы — через `supabase/migrations`, применяются CLI в CI.
+- **Клиент:** статический бандл (Vite) + self-host Supabase на одной VM Яндекс.Облака; CD из main — GitHub Actions (см. спеку CD, deploy/README.md).
+- **Бэкенд:** self-host Supabase (compose на той же VM). Миграции схемы — через `supabase/migrations`, применяются CLI в CD.
 - **Среды:** `local` (supabase local dev), `staging` (закрытый доступ друзей), `production` (пока идентична staging по составу).
 - **Секреты:** `.env` локально, secrets в CI, ключи в Supabase Dashboard/CLI.
 
